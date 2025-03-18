@@ -415,4 +415,3 @@ const mockPlaintiffs = [
     context: "Commented on news article about class action lawsuit against medical device manufacturer.",
   },
 ]
-
