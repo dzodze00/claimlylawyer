@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle, AlertTriangle, Clock, Search, Filter, FileText } from "lucide-react"
+import { CheckCircle, AlertTriangle, Clock, Search, Filter, FileText, Download } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Progress } from "@/components/ui/progress"
@@ -13,10 +13,22 @@ import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 export default function ClaimsPage() {
+  const [isLoading, setIsLoading] = useState(true)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [validating, setValidating] = useState(false)
   const [validationProgress, setValidationProgress] = useState(0)
   const [validationResult, setValidationResult] = useState<any>(null)
+  const [claimsData, setClaimsData] = useState<any[]>([])
+
+  // Simulate loading data
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setClaimsData(mockClaimsData)
+      setIsLoading(false)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   const startValidation = () => {
     if (!selectedClaim) return
@@ -66,14 +78,22 @@ export default function ClaimsPage() {
     return () => clearInterval(interval)
   }
 
+  if (isLoading) {
+    return null // This will trigger the loading.tsx component
+  }
+
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Claim Management</h2>
         <div className="flex items-center space-x-2">
           <Button variant="outline">
+            <Download className="mr-2 h-4 w-4" />
+            Export Claims
+          </Button>
+          <Button variant="outline">
             <FileText className="mr-2 h-4 w-4" />
-            Export Report
+            Generate Report
           </Button>
         </div>
       </div>
@@ -400,7 +420,7 @@ export default function ClaimsPage() {
 }
 
 // Mock claims data
-const claimsData = [
+const mockClaimsData = [
   {
     id: "CLM-2023-0001",
     plaintiff: "Sarah Johnson",
@@ -462,4 +482,3 @@ const claimsData = [
       "Patient received XYZ Hip Implant in 2020. Developed severe complications including tissue damage and bone loss. Underwent revision surgery in June 2022.",
   },
 ]
-
