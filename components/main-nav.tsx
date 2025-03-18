@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { type LucideIcon, Home, FileCheck, BarChart2, Settings, Search } from "lucide-react"
+import { type LucideIcon, Home, FileCheck, BarChart2, Settings, Search, Users } from "lucide-react"
 
 interface NavItem {
   title: string
@@ -26,6 +26,11 @@ const items: NavItem[] = [
     title: "Claim Management",
     href: "/dashboard/claims",
     icon: FileCheck,
+  },
+  {
+    title: "Marketing & Outreach",
+    href: "/dashboard/marketing",
+    icon: Users,
   },
   {
     title: "Analytics",
