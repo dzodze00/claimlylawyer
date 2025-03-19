@@ -87,80 +87,79 @@ const PopoverContent = React.forwardRef<
   }
 >(({ className, isOpen, onOpenChange, align = "center", sideOffset = 4, ...props }, ref) => {
   const [position, setPosition] = React.useState({ top: 0, left: 0 })
-  const internalRef = React.useRef<HTMLDivElement>(null)
   const triggerRef = React.useRef<HTMLElement | null>(null)
 
+  // Create a callback ref function
+  const setRefs = React.useCallback(
+    (element: HTMLDivElement | null) => {
+      // Forward the ref
+      if (typeof ref === "function") {
+        ref(element)
+      } else if (ref) {
+        ref.current = element
+      }
+
+      // If element exists, find the trigger and calculate position
+      if (element && isOpen) {
+        const trigger = element.parentElement?.querySelector('[aria-haspopup="true"]') as HTMLElement
+        if (trigger) {
+          triggerRef.current = trigger
+
+          const triggerRect = trigger.getBoundingClientRect()
+          const contentRect = element.getBoundingClientRect()
+
+          const top = triggerRect.bottom + sideOffset
+          let left = 0
+
+          // Adjust alignment
+          if (align === "start") {
+            left = triggerRect.left
+          } else if (align === "end") {
+            left = triggerRect.right - contentRect.width
+          } else {
+            left = triggerRect.left + (triggerRect.width - contentRect.width) / 2
+          }
+
+          setPosition({ top, left })
+        }
+      }
+    },
+    [ref, isOpen, align, sideOffset],
+  )
+
   React.useEffect(() => {
-    // Find the trigger element (parent of this content)
-    if (isOpen && internalRef.current) {
-      const trigger = internalRef.current.parentElement?.querySelector('[aria-haspopup="true"]') as HTMLElement
-      if (trigger) {
-        triggerRef.current = trigger
-        calculatePosition()
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        triggerRef.current &&
+        !triggerRef.current.contains(e.target as Node) &&
+        e.target instanceof Node &&
+        ref &&
+        "current" in ref &&
+        ref.current &&
+        !ref.current.contains(e.target)
+      ) {
+        onOpenChange?.(false)
       }
     }
-  }, [isOpen])
 
-  const calculatePosition = () => {
-    if (!triggerRef.current || !internalRef.current) return
-
-    const triggerRect = triggerRef.current.getBoundingClientRect()
-    const contentRect = internalRef.current.getBoundingClientRect()
-
-    const top = triggerRect.bottom + sideOffset
-    let left = 0
-
-    // Adjust alignment
-    if (align === "start") {
-      left = triggerRect.left
-    } else if (align === "end") {
-      left = triggerRect.right - contentRect.width
-    } else {
-      left = triggerRect.left + (triggerRect.width - contentRect.width) / 2
-    }
-
-    setPosition({ top, left })
-  }
-
-  const handleClickOutside = (e: MouseEvent) => {
-    if (
-      internalRef.current &&
-      !internalRef.current.contains(e.target as Node) &&
-      triggerRef.current &&
-      !triggerRef.current.contains(e.target as Node)
-    ) {
-      onOpenChange?.(false)
-    }
-  }
-
-  React.useEffect(() => {
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside)
-      window.addEventListener("resize", calculatePosition)
-      window.addEventListener("scroll", calculatePosition)
+      window.addEventListener("resize", () => setRefs(ref && "current" in ref ? ref.current : null))
+      window.addEventListener("scroll", () => setRefs(ref && "current" in ref ? ref.current : null))
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
-      window.removeEventListener("resize", calculatePosition)
-      window.removeEventListener("scroll", calculatePosition)
+      window.removeEventListener("resize", () => setRefs(ref && "current" in ref ? ref.current : null))
+      window.removeEventListener("scroll", () => setRefs(ref && "current" in ref ? ref.current : null))
     }
-  }, [isOpen])
+  }, [isOpen, ref, setRefs, onOpenChange])
 
   if (!isOpen) return null
 
   return (
     <div
-      ref={(el) => {
-        // Handle the forwarded ref
-        if (typeof ref === "function") {
-          ref(el)
-        } else if (ref) {
-          ref.current = el
-        }
-        // Use our internal ref for positioning calculations
-        internalRef.current = el
-      }}
+      ref={setRefs}
       className={cn(
         "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-4 text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95",
         className,
