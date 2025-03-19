@@ -151,7 +151,15 @@ const PopoverContent = React.forwardRef<
 
   return (
     <div
-      ref={contentRef}
+      ref={(el) => {
+        if (typeof ref === "function") {
+          ref(el)
+        } else if (ref) {
+          ref.current = el
+        }
+        contentRef.current = el
+        return undefined
+      }}
       className={cn(
         "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-4 text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95",
         className,
