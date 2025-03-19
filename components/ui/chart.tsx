@@ -3,6 +3,11 @@
 import type * as React from "react"
 import { Tooltip as RechartsTooltip, type TooltipProps } from "recharts"
 
+// Define a type for the CSS variables
+interface CustomCSSProperties extends React.CSSProperties {
+  [key: string]: string | number | undefined
+}
+
 // Simplest possible implementation
 export const ChartContainer: React.FC<
   React.PropsWithChildren<{
@@ -11,9 +16,9 @@ export const ChartContainer: React.FC<
   }>
 > = ({ children, config, className }) => {
   // Create CSS variables for colors
-  const style: React.CSSProperties = {}
+  const style: CustomCSSProperties = {}
   Object.entries(config).forEach(([key, value]) => {
-    style[`--color-${key}` as any] = value.color
+    style[`--color-${key}`] = value.color
   })
 
   return (
@@ -24,14 +29,18 @@ export const ChartContainer: React.FC<
 }
 
 // Simple tooltip wrapper
-export const ChartTooltip = (props: TooltipProps<any, any>) => {
+export const ChartTooltip = (props: TooltipProps<number, string>) => {
   return <RechartsTooltip {...props} />
 }
 
 // Simple tooltip content
 export const ChartTooltipContent: React.FC<{
   active?: boolean
-  payload?: any[]
+  payload?: Array<{
+    name?: string
+    value?: any
+    color?: string
+  }>
   label?: string
 }> = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) {
