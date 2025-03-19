@@ -1,72 +1,47 @@
 "use client"
 
-import * as React from "react"
-import * as RechartsPrimitive from "recharts"
+import type * as React from "react"
+import { Tooltip as RechartsTooltip, type TooltipProps } from "recharts"
 
-import { cn } from "@/lib/utils"
-
-export type ChartConfig = {
-  [key: string]: {
-    label: string
-    color: string
-  }
-}
-
-type ChartContextProps = {
-  config: ChartConfig
-}
-
-const ChartContext = React.createContext<ChartContextProps | null>(null)
-
-function useChart() {
-  const context = React.useContext(ChartContext)
-  if (!context) {
-    throw new Error("useChart must be used within a <ChartContainer />")
-  }
-  return context
-}
-
-const ChartContainer = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div"> & {
-    config: ChartConfig
-    children: React.ReactNode
-  }
->(({ className, children, config, ...props }, ref) => {
+// Simplest possible implementation
+export const ChartContainer: React.FC<
+  React.PropsWithChildren<{
+    config: Record<string, { color: string; label: string }>
+    className?: string
+  }>
+> = ({ children, config, className }) => {
   // Create CSS variables for colors
-  const cssVars = React.useMemo(() => {
-    const vars: Record<string, string> = {}
-    Object.entries(config).forEach(([key, value]) => {
-      vars[`--color-${key}`] = value.color
-    })
-    return vars
-  }, [config])
+  const style: React.CSSProperties = {}
+  Object.entries(config).forEach(([key, value]) => {
+    style[`--color-${key}` as any] = value.color
+  })
 
   return (
-    <ChartContext.Provider value={{ config }}>
-      <div ref={ref} className={cn("flex aspect-video justify-center", className)} style={cssVars} {...props}>
-        <RechartsPrimitive.ResponsiveContainer>{children}</RechartsPrimitive.ResponsiveContainer>
-      </div>
-    </ChartContext.Provider>
+    <div className={className} style={style}>
+      {children}
+    </div>
   )
-})
-ChartContainer.displayName = "ChartContainer"
-
-// Simple tooltip that works with any data
-const ChartTooltip = (props: RechartsPrimitive.TooltipProps<any, any>) => {
-  return <RechartsPrimitive.Tooltip {...props} />
 }
 
-// Simple tooltip content component
-const ChartTooltipContent = ({ active, payload, label }: any) => {
+// Simple tooltip wrapper
+export const ChartTooltip = (props: TooltipProps<any, any>) => {
+  return <RechartsTooltip {...props} />
+}
+
+// Simple tooltip content
+export const ChartTooltipContent: React.FC<{
+  active?: boolean
+  payload?: any[]
+  label?: string
+}> = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) {
     return null
   }
 
   return (
     <div className="rounded-lg border bg-background p-2 shadow-md">
-      <p className="font-medium">{label}</p>
-      {payload.map((item: any, index: number) => (
+      {label && <p className="font-medium">{label}</p>}
+      {payload.map((item, index) => (
         <div key={index} className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />
           <span>
@@ -77,6 +52,4 @@ const ChartTooltipContent = ({ active, payload, label }: any) => {
     </div>
   )
 }
-
-export { ChartContainer, ChartTooltip, ChartTooltipContent }
 
