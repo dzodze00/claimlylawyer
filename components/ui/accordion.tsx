@@ -68,7 +68,7 @@ const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
       <AccordionContext.Provider
         value={{
           value: internalValue,
-          onValueChange: handleValueChange,
+          onValueChange: handleValueChange as (value: string | string[]) => void,
           type,
           collapsible,
         }}
