@@ -1,4 +1,13 @@
-import { Activity, AlertTriangle, FileCheck, TrendingUp, Users, UserPlus, CheckCircle } from "lucide-react"
+import {
+  AlertTriangle,
+  FileCheck,
+  TrendingUp,
+  Users,
+  UserPlus,
+  CheckCircle,
+  Briefcase,
+  CheckSquare,
+} from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,9 +22,11 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
         <div className="flex items-center space-x-2">
-          <Button>
-            <Activity className="mr-2 h-4 w-4" />
-            Active Cases
+          <Button asChild>
+            <Link href="/dashboard/workflow">
+              <Briefcase className="mr-2 h-4 w-4" />
+              Case Workflow
+            </Link>
           </Button>
         </div>
       </div>
@@ -85,6 +96,98 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>End-to-End Workflow</CardTitle>
+              <CardDescription>Complete case management pipeline</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-8">
+                <div className="grid grid-cols-6 gap-4">
+                  {[
+                    {
+                      title: "Plaintiff Discovery",
+                      icon: UserPlus,
+                      description: "Identify potential plaintiffs",
+                      link: "/dashboard/discovery",
+                      count: 578,
+                      status: "Active",
+                    },
+                    {
+                      title: "Claim Validation",
+                      icon: FileCheck,
+                      description: "Validate plaintiff claims",
+                      link: "/dashboard/claims",
+                      count: 423,
+                      status: "Active",
+                    },
+                    {
+                      title: "Plaintiff Outreach",
+                      icon: Users,
+                      description: "Contact validated plaintiffs",
+                      link: "/dashboard/marketing",
+                      count: 312,
+                      status: "Active",
+                    },
+                    {
+                      title: "Case Documentation",
+                      icon: FileCheck,
+                      description: "Collect & organize documents",
+                      link: "/dashboard/claims",
+                      count: 245,
+                      status: "Active",
+                    },
+                    {
+                      title: "Settlement",
+                      icon: Briefcase,
+                      description: "Negotiate settlement terms",
+                      link: "/dashboard/analytics",
+                      count: 128,
+                      status: "Active",
+                    },
+                    {
+                      title: "Case Completion",
+                      icon: CheckCircle,
+                      description: "Finalize & close cases",
+                      link: "/dashboard/workflow",
+                      count: 87,
+                      status: "Completed",
+                    },
+                  ].map((stage, i) => (
+                    <div key={i} className="relative">
+                      {i > 0 && (
+                        <div className="absolute left-0 top-8 -ml-[calc(50%+8px)] w-full border-t border-muted-foreground/20" />
+                      )}
+                      <Link href={stage.link}>
+                        <div className="flex flex-col items-center rounded-lg border p-4 text-center transition-colors hover:bg-muted">
+                          <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                            <stage.icon className="h-6 w-6" />
+                          </div>
+                          <h3 className="text-sm font-medium">{stage.title}</h3>
+                          <p className="text-xs text-muted-foreground">{stage.description}</p>
+                          <div className="mt-2 flex items-center justify-center space-x-2">
+                            <Badge variant={stage.status === "Active" ? "default" : "outline"}>{stage.count}</Badge>
+                            <span className="text-xs text-muted-foreground">{stage.status}</span>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex justify-center">
+                  <Button asChild>
+                    <Link href="/dashboard/workflow">
+                      <Briefcase className="mr-2 h-4 w-4" />
+                      View Case Workflow
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
             <Card className="col-span-4">
               <CardHeader>
@@ -96,11 +199,65 @@ export default function DashboardPage() {
             </Card>
             <Card className="col-span-3">
               <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>Latest plaintiff discovery and claim validation activities</CardDescription>
+                <CardTitle>Upcoming Tasks</CardTitle>
+                <CardDescription>Tasks due in the next 7 days</CardDescription>
               </CardHeader>
               <CardContent>
-                <RecentActivity />
+                <div className="space-y-4">
+                  {[
+                    {
+                      title: "Review medical records for Sarah Johnson",
+                      dueDate: "Oct 25, 2023",
+                      priority: "High",
+                      case: "Johnson v. PharmaCorp",
+                    },
+                    {
+                      title: "Schedule interview with Robert Smith",
+                      dueDate: "Oct 26, 2023",
+                      priority: "Medium",
+                      case: "Smith v. TechGiant",
+                    },
+                    {
+                      title: "Draft outreach email campaign",
+                      dueDate: "Oct 24, 2023",
+                      priority: "Medium",
+                      case: "Garcia v. AutoManufacturer",
+                    },
+                    {
+                      title: "Follow up on missing medical records",
+                      dueDate: "Oct 23, 2023",
+                      priority: "High",
+                      case: "Williams v. InsuranceCo",
+                    },
+                  ].map((task, i) => (
+                    <div key={i} className="flex items-start space-x-4">
+                      <div className="mt-0.5 rounded-full bg-primary/10 p-2 text-primary">
+                        <CheckSquare className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium">{task.title}</p>
+                          <Badge variant={task.priority === "High" ? "destructive" : "secondary"}>
+                            {task.priority}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center text-xs text-muted-foreground">
+                          <span>Due: {task.dueDate}</span>
+                          <span className="mx-2">•</span>
+                          <span>{task.case}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="flex justify-end">
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href="/dashboard/tasks">
+                        <CheckSquare className="mr-2 h-4 w-4" />
+                        View All Tasks
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -286,7 +443,7 @@ function CaseList() {
       {cases.map((c) => (
         <div key={c.id} className="flex items-center">
           <div className="ml-4 space-y-1">
-            <Link href="/dashboard/discovery" className="text-sm font-medium leading-none hover:underline">
+            <Link href="/dashboard/workflow" className="text-sm font-medium leading-none hover:underline">
               {c.name}
             </Link>
             <p className="text-sm text-muted-foreground">
@@ -299,60 +456,6 @@ function CaseList() {
           </div>
           <div className="ml-auto font-medium">
             <Badge variant={c.status === "Active" ? "default" : "outline"}>{c.status}</Badge>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function RecentActivity() {
-  const activities = [
-    {
-      id: 1,
-      action: "New plaintiff identified",
-      details: "AI discovered potential plaintiff from social media",
-      time: "2 hours ago",
-    },
-    {
-      id: 2,
-      action: "Claim validated",
-      details: "AI verified purchase records and medical documentation",
-      time: "5 hours ago",
-    },
-    {
-      id: 3,
-      action: "Potential fraud detected",
-      details: "Duplicate claim submission with inconsistent details",
-      time: "Yesterday",
-    },
-    {
-      id: 4,
-      action: "Settlement estimate updated",
-      details: "Based on 150 new validated claims",
-      time: "2 days ago",
-    },
-  ]
-
-  return (
-    <div className="space-y-8">
-      {activities.map((activity) => (
-        <div key={activity.id} className="flex items-center">
-          <div className="mr-4 rounded-full bg-primary/10 p-2">
-            {activity.id === 1 ? (
-              <UserPlus className="h-4 w-4 text-primary" />
-            ) : activity.id === 2 ? (
-              <CheckCircle className="h-4 w-4 text-green-500" />
-            ) : activity.id === 3 ? (
-              <AlertTriangle className="h-4 w-4 text-red-500" />
-            ) : (
-              <TrendingUp className="h-4 w-4 text-amber-500" />
-            )}
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm font-medium leading-none">{activity.action}</p>
-            <p className="text-sm text-muted-foreground">{activity.details}</p>
-            <p className="text-xs text-muted-foreground">{activity.time}</p>
           </div>
         </div>
       ))}
