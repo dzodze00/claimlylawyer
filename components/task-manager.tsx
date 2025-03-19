@@ -167,7 +167,7 @@ export function TaskManager() {
             </div>
             <Select
               value={taskStatus}
-              onChange={(e) => setTaskStatus(e.target.value as TaskStatus | "all")}
+              onChange={(value) => setTaskStatus(value as TaskStatus | "all")}
               className="w-[180px]"
               options={[
                 { value: "all", label: "All Statuses" },
@@ -453,3 +453,4 @@ const mockTasks: Task[] = [
     updatedAt: "2023-10-17 16:20",
   },
 ]
+
