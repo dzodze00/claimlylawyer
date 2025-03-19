@@ -3,7 +3,17 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { type LucideIcon, Home, FileCheck, BarChart2, Settings, Search, Users } from "lucide-react"
+import {
+  type LucideIcon,
+  Home,
+  FileCheck,
+  BarChart2,
+  Settings,
+  Search,
+  Users,
+  Briefcase,
+  CheckSquare,
+} from "lucide-react"
 
 interface NavItem {
   title: string
@@ -16,6 +26,16 @@ const items: NavItem[] = [
     title: "Dashboard",
     href: "/dashboard",
     icon: Home,
+  },
+  {
+    title: "Case Workflow",
+    href: "/dashboard/workflow",
+    icon: Briefcase,
+  },
+  {
+    title: "Tasks",
+    href: "/dashboard/tasks",
+    icon: CheckSquare,
   },
   {
     title: "Plaintiff Discovery",
