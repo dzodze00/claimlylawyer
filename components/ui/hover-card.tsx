@@ -117,57 +117,79 @@ const HoverCardContent = React.forwardRef<
   }
 >(({ className, isOpen, onMouseEnter, onMouseLeave, align = "center", sideOffset = 4, ...props }, ref) => {
   const [position, setPosition] = React.useState({ top: 0, left: 0 })
-  const internalRef = React.useRef<HTMLDivElement>(null)
   const triggerRef = React.useRef<HTMLElement | null>(null)
 
+  // Create a callback ref function
+  const setRefs = React.useCallback(
+    (element: HTMLDivElement | null) => {
+      // Forward the ref
+      if (typeof ref === "function") {
+        ref(element)
+      } else if (ref) {
+        ref.current = element
+      }
+
+      // If element exists, find the trigger and calculate position
+      if (element && isOpen) {
+        const trigger = element.parentElement?.querySelector('[data-hover-card-trigger="true"]') as HTMLElement
+        if (trigger) {
+          triggerRef.current = trigger
+
+          const triggerRect = trigger.getBoundingClientRect()
+          const contentRect = element.getBoundingClientRect()
+
+          const top = triggerRect.bottom + sideOffset + window.scrollY
+          let left = 0
+
+          // Adjust alignment
+          if (align === "start") {
+            left = triggerRect.left + window.scrollX
+          } else if (align === "end") {
+            left = triggerRect.right - contentRect.width + window.scrollX
+          } else {
+            left = triggerRect.left + (triggerRect.width - contentRect.width) / 2 + window.scrollX
+          }
+
+          setPosition({ top, left })
+        }
+      }
+    },
+    [ref, isOpen, align, sideOffset],
+  )
+
   React.useEffect(() => {
-    // Find the trigger element (parent of this content)
-    if (isOpen && internalRef.current) {
-      const trigger = internalRef.current.parentElement?.querySelector(
-        '[data-hover-card-trigger="true"]',
-      ) as HTMLElement
-      if (trigger) {
-        triggerRef.current = trigger
-        calculatePosition()
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        triggerRef.current &&
+        !triggerRef.current.contains(e.target as Node) &&
+        e.target instanceof Node &&
+        ref &&
+        "current" in ref &&
+        ref.current &&
+        !ref.current.contains(e.target)
+      ) {
+        onMouseLeave?.()
       }
     }
-  }, [isOpen])
 
-  const calculatePosition = () => {
-    if (!triggerRef.current || !internalRef.current) return
-
-    const triggerRect = triggerRef.current.getBoundingClientRect()
-    const contentRect = internalRef.current.getBoundingClientRect()
-
-    const top = triggerRect.bottom + sideOffset + window.scrollY
-    let left = 0
-
-    // Adjust alignment
-    if (align === "start") {
-      left = triggerRect.left + window.scrollX
-    } else if (align === "end") {
-      left = triggerRect.right - contentRect.width + window.scrollX
-    } else {
-      left = triggerRect.left + (triggerRect.width - contentRect.width) / 2 + window.scrollX
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside)
+      window.addEventListener("resize", () => setRefs(ref && "current" in ref ? ref.current : null))
+      window.addEventListener("scroll", () => setRefs(ref && "current" in ref ? ref.current : null))
     }
 
-    setPosition({ top, left })
-  }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+      window.removeEventListener("resize", () => setRefs(ref && "current" in ref ? ref.current : null))
+      window.removeEventListener("scroll", () => setRefs(ref && "current" in ref ? ref.current : null))
+    }
+  }, [isOpen, ref, setRefs, onMouseLeave])
 
   if (!isOpen) return null
 
   return (
     <div
-      ref={(el) => {
-        // Handle the forwarded ref
-        if (typeof ref === "function") {
-          ref(el)
-        } else if (ref) {
-          ref.current = el
-        }
-        // Use our internal ref for positioning calculations
-        internalRef.current = el
-      }}
+      ref={setRefs}
       className={cn(
         "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-4 text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95",
         className,
