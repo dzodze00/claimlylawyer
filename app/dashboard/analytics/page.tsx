@@ -715,3 +715,4 @@ const comparableCaseData = [
   { case: "Davis v. HealthTech", amount: 26.8 },
   { case: "Wilson v. MedDevice", amount: 19.2 },
 ]
+
