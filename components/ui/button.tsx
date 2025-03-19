@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
@@ -38,7 +40,6 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     if (asChild && React.isValidElement(props.children)) {
-      // If asChild is true and children is a valid element, clone the element
       return React.cloneElement(props.children as React.ReactElement, {
         className: cn(buttonVariants({ variant, size, className })),
         ref,
@@ -52,3 +53,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 export { Button, buttonVariants }
+
