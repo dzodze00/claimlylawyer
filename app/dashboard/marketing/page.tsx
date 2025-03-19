@@ -58,6 +58,76 @@ export default function MarketingPage() {
           <TabsTrigger value="targeting">Targeting</TabsTrigger>
         </TabsList>
 
+        <TabsContent value="analytics" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Channel Performance</CardTitle>
+                <CardDescription>Conversion rates by outreach channel</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[300px]">
+                <ChartContainer
+                  config={{
+                    email: {
+                      label: "Email",
+                      color: "hsl(var(--chart-1))",
+                    },
+                    social: {
+                      label: "Social Media",
+                      color: "hsl(var(--chart-2))",
+                    },
+                  }}
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={channelPerformanceData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Legend />
+                      <Bar dataKey="response" name="Response Rate" fill="var(--color-email)" />
+                      <Bar dataKey="conversion" name="Conversion Rate" fill="var(--color-social)" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Outreach Effectiveness</CardTitle>
+                <CardDescription>Response trends over time</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[300px]">
+                <ChartContainer
+                  config={{
+                    outreach: {
+                      label: "Outreach",
+                      color: "hsl(var(--chart-1))",
+                    },
+                    responses: {
+                      label: "Responses",
+                      color: "hsl(var(--chart-2))",
+                    },
+                  }}
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={outreachEffectivenessData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Legend />
+                      <Line type="monotone" dataKey="outreach" stroke="var(--color-outreach)" strokeWidth={2} />
+                      <Line type="monotone" dataKey="responses" stroke="var(--color-responses)" strokeWidth={2} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
         <TabsContent value="campaigns" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
@@ -645,202 +715,6 @@ export default function MarketingPage() {
             <CardFooter>
               <Button className="w-full">Create New Template</Button>
             </CardFooter>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="analytics" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Channel Performance</CardTitle>
-                <CardDescription>Conversion rates by outreach channel</CardDescription>
-              </CardHeader>
-              <CardContent className="h-[300px]">
-                <ChartContainer
-                  config={{
-                    email: {
-                      label: "Email",
-                      color: "hsl(var(--chart-1))",
-                    },
-                    social: {
-                      label: "Social Media",
-                      color: "hsl(var(--chart-2))",
-                    },
-                    sms: {
-                      label: "SMS",
-                      color: "hsl(var(--chart-3))",
-                    },
-                    direct: {
-                      label: "Direct Mail",
-                      color: "hsl(var(--chart-4))",
-                    },
-                  }}
-                >
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={channelPerformanceData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Legend />
-                      <Bar dataKey="response" name="Response Rate" fill="var(--color-email)" />
-                      <Bar dataKey="conversion" name="Conversion Rate" fill="var(--color-social)" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Outreach Effectiveness</CardTitle>
-                <CardDescription>Response trends over time</CardDescription>
-              </CardHeader>
-              <CardContent className="h-[300px]">
-                <ChartContainer
-                  config={{
-                    outreach: {
-                      label: "Outreach",
-                      color: "hsl(var(--chart-1))",
-                    },
-                    responses: {
-                      label: "Responses",
-                      color: "hsl(var(--chart-2))",
-                    },
-                    conversions: {
-                      label: "Conversions",
-                      color: "hsl(var(--chart-3))",
-                    },
-                  }}
-                >
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={outreachEffectivenessData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Legend />
-                      <Line type="monotone" dataKey="outreach" stroke="var(--color-outreach)" strokeWidth={2} />
-                      <Line type="monotone" dataKey="responses" stroke="var(--color-responses)" strokeWidth={2} />
-                      <Line type="monotone" dataKey="conversions" stroke="var(--color-conversions)" strokeWidth={2} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Messaging Effectiveness</CardTitle>
-              <CardDescription>Performance analysis of different message types and content</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <h3 className="mb-4 text-sm font-semibold">Message Type Performance</h3>
-                  <ChartContainer
-                    config={{
-                      response: {
-                        label: "Response Rate",
-                        color: "hsl(var(--chart-1))",
-                      },
-                    }}
-                  >
-                    <ResponsiveContainer width="100%" height={200}>
-                      <BarChart data={messageTypeData} layout="vertical">
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis type="number" />
-                        <YAxis dataKey="type" type="category" width={150} />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar dataKey="response" fill="var(--color-response)" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </div>
-
-                <div>
-                  <h3 className="mb-4 text-sm font-semibold">Content Element Impact</h3>
-                  <ChartContainer
-                    config={{
-                      impact: {
-                        label: "Impact Score",
-                        color: "hsl(var(--chart-1))",
-                      },
-                    }}
-                  >
-                    <ResponsiveContainer width="100%" height={200}>
-                      <BarChart data={contentElementData} layout="vertical">
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis type="number" />
-                        <YAxis dataKey="element" type="category" width={150} />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar dataKey="impact" fill="var(--color-impact)" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>ROI Analysis</CardTitle>
-              <CardDescription>Cost and return metrics for plaintiff acquisition</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold">Cost Per Acquisition</h3>
-                  <div className="text-2xl font-bold">$42.18</div>
-                  <p className="text-xs text-muted-foreground">-8.3% from previous period</p>
-                </div>
-
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold">Average Case Value</h3>
-                  <div className="text-2xl font-bold">$124,500</div>
-                  <p className="text-xs text-muted-foreground">Based on settled cases</p>
-                </div>
-
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold">Marketing ROI</h3>
-                  <div className="text-2xl font-bold">2,950%</div>
-                  <p className="text-xs text-muted-foreground">For every $1 spent on marketing</p>
-                </div>
-              </div>
-
-              <Separator className="my-4" />
-
-              <div className="space-y-4">
-                <h3 className="text-sm font-semibold">Channel ROI Comparison</h3>
-                <ChartContainer
-                  config={{
-                    cpa: {
-                      label: "Cost Per Acquisition",
-                      color: "hsl(var(--chart-1))",
-                    },
-                    roi: {
-                      label: "ROI",
-                      color: "hsl(var(--chart-2))",
-                    },
-                  }}
-                >
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={channelROIData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="channel" />
-                      <YAxis yAxisId="left" orientation="left" stroke="var(--color-cpa)" />
-                      <YAxis yAxisId="right" orientation="right" stroke="var(--color-roi)" />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Legend />
-                      <Bar yAxisId="left" dataKey="cpa" fill="var(--color-cpa)" name="Cost Per Acquisition ($)" />
-                      <Bar yAxisId="right" dataKey="roi" fill="var(--color-roi)" name="ROI (%)" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
-              </div>
-            </CardContent>
           </Card>
         </TabsContent>
 
