@@ -81,8 +81,12 @@ DropdownMenuTrigger.displayName = "DropdownMenuTrigger"
 
 const DropdownMenuContent = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { isOpen?: boolean; sideOffset?: number }
->(({ className, isOpen, sideOffset = 4, ...props }, ref) => {
+  React.HTMLAttributes<HTMLDivElement> & {
+    isOpen?: boolean
+    sideOffset?: number
+    align?: "start" | "center" | "end"
+  }
+>(({ className, isOpen, sideOffset = 4, align = "end", ...props }, ref) => {
   if (!isOpen) return null
 
   return (
@@ -95,7 +99,9 @@ const DropdownMenuContent = React.forwardRef<
         )}
         style={{
           top: `calc(100% + ${sideOffset}px)`,
-          right: 0,
+          right: align === "end" ? 0 : undefined,
+          left: align === "start" ? 0 : align === "center" ? "50%" : undefined,
+          transform: align === "center" ? "translateX(-50%)" : undefined,
         }}
         {...props}
       />
