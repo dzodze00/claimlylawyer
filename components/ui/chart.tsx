@@ -4,17 +4,9 @@ import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 
 import { cn } from "@/lib/utils"
-import { Tooltip } from "@/components/ui/tooltip"
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
-
-// interface ChartConfig {
-//   [key: string]: {
-//     label: string
-//     color: string
-//   }
-// }
 
 export type ChartConfig = {
   [k in string]: {
@@ -38,10 +30,6 @@ function useChart() {
 
   return context
 }
-
-// interface ChartContainerProps extends React.HTMLAttributes<HTMLDivElement> {
-//   config: ChartConfig
-// }
 
 const ChartContainer = React.forwardRef<
   HTMLDivElement,
@@ -104,6 +92,7 @@ ${colorConfig
     const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color
     return color ? `  --color-${key}: ${color};` : null
   })
+  .filter(Boolean)
   .join("\n")}
 }
 `,
@@ -114,18 +103,10 @@ ${colorConfig
   )
 }
 
-// interface ChartTooltipProps extends React.ComponentPropsWithoutRef<typeof Tooltip> {}
-
-const ChartTooltip = ({ ...props }: React.ComponentProps<typeof Tooltip>) => {
-  return <Tooltip {...props} />
+// This is the component causing the error - fixing the type definition
+const ChartTooltip = (props: RechartsPrimitive.TooltipProps) => {
+  return <RechartsPrimitive.Tooltip {...props} />
 }
-
-// interface ChartTooltipContentProps extends React.ComponentPropsWithoutRef<typeof TooltipContent> {
-//   payload?: Array<{ name?: string; value?: string | number; dataKey?: string }>
-//   label?: string
-//   active?: boolean
-//   config?: ChartConfig
-// }
 
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
@@ -201,7 +182,7 @@ const ChartTooltipContent = React.forwardRef<
           {payload.map((item, index) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
-            const indicatorColor = color || item.payload.fill || item.color
+            const indicatorColor = color || item.payload?.fill || item.color
 
             return (
               <div
