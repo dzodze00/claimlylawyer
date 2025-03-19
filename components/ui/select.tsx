@@ -3,6 +3,68 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
+interface SelectOption {
+  value: string
+  label: string
+}
+
+interface SelectProps extends React.HTMLAttributes<HTMLDivElement> {
+  value: string
+  onChange: (value: string) => void
+  options: SelectOption[]
+  className?: string
+}
+
+const Select = React.forwardRef<HTMLDivElement, SelectProps>(
+  ({ className, value, onChange, options, ...props }, ref) => {
+    const [isOpen, setIsOpen] = React.useState(false)
+
+    const handleSelect = (optionValue: string) => {
+      onChange(optionValue)
+      setIsOpen(false)
+    }
+
+    const selectedOption = options.find((option) => option.value === value)
+
+    return (
+      <div ref={ref} className={cn("relative", className)} {...props}>
+        <SelectTrigger onClick={() => setIsOpen(!isOpen)} className={cn("w-full", className)}>
+          <SelectValue>{selectedOption?.label || "Select option"}</SelectValue>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={cn("h-4 w-4 transition-transform", isOpen ? "rotate-180" : "")}
+          >
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </SelectTrigger>
+
+        {isOpen && (
+          <SelectContent>
+            {options.map((option) => (
+              <SelectItem
+                key={option.value}
+                onClick={() => handleSelect(option.value)}
+                className={cn(option.value === value && "bg-accent text-accent-foreground")}
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        )}
+      </div>
+    )
+  },
+)
+Select.displayName = "Select"
+
 const SelectGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div ref={ref} className={cn("py-1.5 font-medium [&[aria-disabled=true]]:opacity-50", className)} {...props} />
@@ -36,7 +98,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
     <div
       ref={ref}
       className={cn(
-        "relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-80",
+        "absolute top-full left-0 z-50 mt-1 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-80",
         className,
       )}
       {...props}
@@ -100,6 +162,7 @@ const SelectScrollDownButton = React.forwardRef<HTMLDivElement, React.HTMLAttrib
 SelectScrollDownButton.displayName = "SelectScrollDownButton"
 
 export {
+  Select,
   SelectGroup,
   SelectTrigger,
   SelectValue,
@@ -110,4 +173,3 @@ export {
   SelectScrollUpButton,
   SelectScrollDownButton,
 }
-
