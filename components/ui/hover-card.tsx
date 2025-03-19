@@ -117,13 +117,15 @@ const HoverCardContent = React.forwardRef<
   }
 >(({ className, isOpen, onMouseEnter, onMouseLeave, align = "center", sideOffset = 4, ...props }, ref) => {
   const [position, setPosition] = React.useState({ top: 0, left: 0 })
-  const contentRef = React.useRef<HTMLDivElement>(null)
+  const internalRef = React.useRef<HTMLDivElement>(null)
   const triggerRef = React.useRef<HTMLElement | null>(null)
 
   React.useEffect(() => {
     // Find the trigger element (parent of this content)
-    if (isOpen && contentRef.current) {
-      const trigger = contentRef.current.parentElement?.querySelector('[data-hover-card-trigger="true"]') as HTMLElement
+    if (isOpen && internalRef.current) {
+      const trigger = internalRef.current.parentElement?.querySelector(
+        '[data-hover-card-trigger="true"]',
+      ) as HTMLElement
       if (trigger) {
         triggerRef.current = trigger
         calculatePosition()
@@ -132,10 +134,10 @@ const HoverCardContent = React.forwardRef<
   }, [isOpen])
 
   const calculatePosition = () => {
-    if (!triggerRef.current || !contentRef.current) return
+    if (!triggerRef.current || !internalRef.current) return
 
     const triggerRect = triggerRef.current.getBoundingClientRect()
-    const contentRect = contentRef.current.getBoundingClientRect()
+    const contentRect = internalRef.current.getBoundingClientRect()
 
     const top = triggerRect.bottom + sideOffset + window.scrollY
     let left = 0
@@ -157,13 +159,14 @@ const HoverCardContent = React.forwardRef<
   return (
     <div
       ref={(el) => {
+        // Handle the forwarded ref
         if (typeof ref === "function") {
           ref(el)
         } else if (ref) {
           ref.current = el
         }
-        contentRef.current = el
-        return undefined
+        // Use our internal ref for positioning calculations
+        internalRef.current = el
       }}
       className={cn(
         "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-4 text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95",
