@@ -124,7 +124,6 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
             key={index}
             ref={(el) => {
               thumbRefs.current[index] = el
-              // Return nothing to fix the type error
               return undefined
             }}
             className={cn(
