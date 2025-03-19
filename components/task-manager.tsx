@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CheckCircle, Clock, AlertTriangle, Calendar, User, FileText, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select } from "@/components/ui/select"
 
 export type TaskPriority = "high" | "medium" | "low"
 export type TaskStatus = "pending" | "in_progress" | "completed" | "blocked"
@@ -165,18 +165,18 @@ export function TaskManager() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input type="search" placeholder="Search tasks..." className="pl-8" />
             </div>
-            <Select value={taskStatus} onValueChange={(value) => setTaskStatus(value as TaskStatus | "all")}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="in_progress">In Progress</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="blocked">Blocked</SelectItem>
-              </SelectContent>
-            </Select>
+            <Select
+              value={taskStatus}
+              onChange={(e) => setTaskStatus(e.target.value as TaskStatus | "all")}
+              className="w-[180px]"
+              options={[
+                { value: "all", label: "All Statuses" },
+                { value: "pending", label: "Pending" },
+                { value: "in_progress", label: "In Progress" },
+                { value: "completed", label: "Completed" },
+                { value: "blocked", label: "Blocked" },
+              ]}
+            />
           </div>
         </CardHeader>
         <CardContent>
