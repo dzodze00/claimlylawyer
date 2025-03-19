@@ -170,4 +170,3 @@ const AccordionContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<H
 AccordionContent.displayName = "AccordionContent"
 
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }
-
