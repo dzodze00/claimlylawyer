@@ -9,17 +9,16 @@ export default function GlobalError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  // Use the error parameter to avoid the TypeScript error
+  console.error("Global error occurred:", error)
+
   return (
-    <html lang="en">
+    <html>
       <body>
-        <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
-          <div className="container flex flex-col items-center justify-center gap-6 px-4 py-16 text-center">
-            <h1 className="text-4xl font-extrabold tracking-tight">Something went wrong!</h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              We apologize for the inconvenience. Please try again.
-            </p>
-            <Button onClick={() => reset()}>Try again</Button>
-          </div>
+        <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
+          <h1 className="text-3xl font-bold mb-4">Something went wrong!</h1>
+          <p className="mb-6 text-gray-600">We apologize for the inconvenience. An unexpected error has occurred.</p>
+          <Button onClick={reset}>Try again</Button>
         </div>
       </body>
     </html>
