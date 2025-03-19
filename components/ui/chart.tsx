@@ -1,64 +1,73 @@
 "use client"
 
-import type * as React from "react"
-import { Tooltip as RechartsTooltip, type TooltipProps } from "recharts"
+import type React from "react"
+import { cn } from "@/lib/utils"
 
-// Define a type for the CSS variables
-interface CustomCSSProperties extends React.CSSProperties {
-  [key: string]: string | number | undefined
+interface ChartContainerProps {
+  children: React.ReactNode
+  className?: string
 }
 
-// Simplest possible implementation
-export const ChartContainer: React.FC<
-  React.PropsWithChildren<{
-    config: Record<string, { color: string; label: string }>
-    className?: string
-  }>
-> = ({ children, config, className }) => {
-  // Create CSS variables for colors
-  const style: CustomCSSProperties = {}
-  Object.entries(config).forEach(([key, value]) => {
-    style[`--color-${key}`] = value.color
-  })
+export function ChartContainer({ children, className }: ChartContainerProps) {
+  return <div className={cn("w-full h-full", className)}>{children}</div>
+}
 
+interface ChartTooltipProps {
+  children: React.ReactNode
+  className?: string
+}
+
+export function ChartTooltip({ children, className }: ChartTooltipProps) {
+  return <div className={cn("pointer-events-none", className)}>{children}</div>
+}
+
+interface ChartTooltipContentProps {
+  label: string
+  value: number
+  className?: string
+}
+
+export function ChartTooltipContent({ label, value, className }: ChartTooltipContentProps) {
   return (
-    <div className={className} style={style}>
-      {children}
+    <div className={cn("p-2 bg-popover text-popover-foreground rounded-md shadow-md", className)}>
+      <p className="text-sm font-medium">{label}</p>
+      <p className="text-xs opacity-80">{value}</p>
     </div>
   )
 }
 
-// Simple tooltip wrapper
-export const ChartTooltip = (props: TooltipProps<number, string>) => {
-  return <RechartsTooltip {...props} />
+interface ChartLegendProps {
+  children: React.ReactNode
+  className?: string
 }
 
-// Simple tooltip content
-export const ChartTooltipContent: React.FC<{
-  active?: boolean
-  payload?: Array<{
-    name?: string
-    value?: any
-    color?: string
-  }>
-  label?: string
-}> = ({ active, payload, label }) => {
-  if (!active || !payload || !payload.length) {
-    return null
-  }
+export function ChartLegend({ children, className }: ChartLegendProps) {
+  return <div className={cn("flex items-center space-x-2", className)}>{children}</div>
+}
 
+interface ChartLegendContentProps {
+  label: string
+  color: string
+  className?: string
+}
+
+export function ChartLegendContent({ label, color, className }: ChartLegendContentProps) {
   return (
-    <div className="rounded-lg border bg-background p-2 shadow-md">
-      {label && <p className="font-medium">{label}</p>}
-      {payload.map((item, index) => (
-        <div key={index} className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />
-          <span>
-            {item.name}: {item.value}
-          </span>
-        </div>
-      ))}
+    <div className={cn("flex items-center space-x-1", className)}>
+      <span className="block h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
+      <p className="text-xs">{label}</p>
     </div>
   )
 }
 
+interface ChartStyleProps {
+  className?: string
+}
+
+export function ChartStyle({ className }: ChartStyleProps) {
+  return (
+    <style jsx>{`
+    /* Add any global chart styles here */
+  `}</style>
+  )
+}
