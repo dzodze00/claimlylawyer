@@ -8,14 +8,15 @@ interface SelectOption {
   label: string
 }
 
-interface SelectProps extends React.HTMLAttributes<HTMLDivElement> {
+interface SelectProps {
   value: string
   onChange: (value: string) => void
   options: SelectOption[]
   className?: string
+  // Add any other props you need
 }
 
-const Select = React.forwardRef<HTMLDivElement, SelectProps>(
+const Select = React.forwardRef<HTMLDivElement, SelectProps & Omit<React.HTMLAttributes<HTMLDivElement>, "onChange">>(
   ({ className, value, onChange, options, ...props }, ref) => {
     const [isOpen, setIsOpen] = React.useState(false)
 
