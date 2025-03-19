@@ -122,7 +122,11 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         {internalValue.map((value, index) => (
           <div
             key={index}
-            ref={(el) => (thumbRefs.current[index] = el)}
+            ref={(el) => {
+              thumbRefs.current[index] = el
+              // Return nothing to fix the type error
+              return undefined
+            }}
             className={cn(
               "absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
               dragging && "cursor-grabbing",
@@ -165,3 +169,4 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
 Slider.displayName = "Slider"
 
 export { Slider }
+
