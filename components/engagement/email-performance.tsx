@@ -112,4 +112,3 @@ export function EmailPerformance({ detailed = false }: EmailPerformanceProps) {
     </div>
   )
 }
-
