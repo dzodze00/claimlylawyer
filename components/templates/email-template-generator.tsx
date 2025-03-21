@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { Select } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Wand2, Save, RefreshCw, ThumbsUp, ThumbsDown } from "lucide-react"
 
@@ -176,33 +176,31 @@ ClaimlyLawyer, LLC`,
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="template-type">Template Type</Label>
-              <Select value={templateType} onChange={(value) => setTemplateType(value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="initial-contact">Initial Contact</SelectItem>
-                  <SelectItem value="follow-up">Follow-up</SelectItem>
-                  <SelectItem value="document-request">Document Request</SelectItem>
-                  <SelectItem value="status-update">Status Update</SelectItem>
-                  <SelectItem value="settlement-offer">Settlement Offer</SelectItem>
-                </SelectContent>
-              </Select>
+              <Select
+                value={templateType}
+                onChange={(value) => setTemplateType(value)}
+                options={[
+                  { value: "initial-contact", label: "Initial Contact" },
+                  { value: "follow-up", label: "Follow-up" },
+                  { value: "document-request", label: "Document Request" },
+                  { value: "status-update", label: "Status Update" },
+                  { value: "settlement-offer", label: "Settlement Offer" },
+                ]}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="template-tone">Tone</Label>
-              <Select value={tone} onChange={(value) => setTone(value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="professional">Professional</SelectItem>
-                  <SelectItem value="friendly">Friendly</SelectItem>
-                  <SelectItem value="empathetic">Empathetic</SelectItem>
-                  <SelectItem value="urgent">Urgent</SelectItem>
-                  <SelectItem value="formal">Formal</SelectItem>
-                </SelectContent>
-              </Select>
+              <Select
+                value={tone}
+                onChange={(value) => setTone(value)}
+                options={[
+                  { value: "professional", label: "Professional" },
+                  { value: "friendly", label: "Friendly" },
+                  { value: "empathetic", label: "Empathetic" },
+                  { value: "urgent", label: "Urgent" },
+                  { value: "formal", label: "Formal" },
+                ]}
+              />
             </div>
           </div>
 
