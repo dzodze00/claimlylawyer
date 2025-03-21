@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select } from "@/components/ui/select"
 import { Chart } from "@/components/ui/chart"
 
 // Sample data for email performance
@@ -31,16 +31,16 @@ export function EmailPerformance({ detailed = false }: EmailPerformanceProps) {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <Select value={timeRange} onChange={(value) => setTimeRange(value)} className="w-40">
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="7days">Last 7 days</SelectItem>
-            <SelectItem value="30days">Last 30 days</SelectItem>
-            <SelectItem value="90days">Last 90 days</SelectItem>
-          </SelectContent>
-        </Select>
+        <Select
+          value={timeRange}
+          onChange={(value) => setTimeRange(value)}
+          options={[
+            { value: "7days", label: "Last 7 days" },
+            { value: "30days", label: "Last 30 days" },
+            { value: "90days", label: "Last 90 days" },
+          ]}
+          className="w-40"
+        />
 
         {detailed && (
           <Button variant="outline" size="sm">
