@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { Select } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Save, Eye, Code, Wand2 } from "lucide-react"
@@ -112,18 +112,7 @@ export function EmailTemplateEditor() {
                   onChange={(value) => handleInsertVariable(value)}
                   options={variableOptions}
                   className="w-48"
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Insert variable..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {variableOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                />
                 <Button variant="outline" size="sm">
                   <Wand2 className="h-4 w-4 mr-2" />
                   Improve
